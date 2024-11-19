@@ -117,4 +117,7 @@ public class Configuration {
 
     @Value("${state.level.tenantid.length}")
     private Integer stateLevelTenantIdLength;
+
+    @Value("${egov.complaints.category}")
+    private String complaintTypes;
 }

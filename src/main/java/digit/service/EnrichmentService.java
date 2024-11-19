@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.util.StringUtils;
 
+import static digit.config.ServiceConstants.USERTYPE_CITIZEN;
+
 @org.springframework.stereotype.Service
 public class EnrichmentService {
 
@@ -21,13 +23,16 @@ public class EnrichmentService {
 
     private Configuration config;
 
+    private UserService userService;
+
 
 
     @Autowired
-    public EnrichmentService(PGRUtils utils, IdgenUtil idgenUtil, Configuration config) {
+    public EnrichmentService(PGRUtils utils, IdgenUtil idgenUtil, Configuration config, UserService userService) {
         this.utils = utils;
         this.idgenUtil = idgenUtil;
         this.config = config;
+        this.userService=userService;
 
     }
 
@@ -42,7 +47,9 @@ public class EnrichmentService {
         Service service = serviceRequest.getServiceWrapper().getService();
         Workflow workflow = serviceRequest.getServiceWrapper().getWorkflow();
         String tenantId = service.getTenantId();
-//        userService.callUserService(serviceRequest);
+        if(requestInfo.getUserInfo().getType().equalsIgnoreCase(USERTYPE_CITIZEN))
+            serviceRequest.getServiceWrapper().getService().setAccountId(requestInfo.getUserInfo().getUuid());
+        userService.callUserService(serviceRequest);
         AuditDetails auditDetails = utils.getAuditDetails(requestInfo.getUserInfo().getUuid(), service,true);
 
         service.setAuditDetails(auditDetails);
@@ -56,8 +63,8 @@ public class EnrichmentService {
             });
         }
 
-//        if(StringUtils.isEmpty(service.getAccountId()))
-//            service.setAccountId(service.getCitizen().getUuid());
+        if(StringUtils.isEmpty(service.getAccountId()))
+            service.setAccountId(service.getCitizen().getUuid());
 
         List<String> customIds = idgenUtil.getIdList(requestInfo,tenantId,config.getServiceRequestIdGenName(),config.getServiceRequestIdGenFormat(),1);
 
@@ -78,6 +85,7 @@ public class EnrichmentService {
         AuditDetails auditDetails = utils.getAuditDetails(requestInfo.getUserInfo().getUuid(), service,false);
 
         service.setAuditDetails(auditDetails);
+        userService.callUserService(serviceRequest);
 
     }
 
@@ -90,7 +98,10 @@ public class EnrichmentService {
     public void enrichSearchRequest(RequestInfo requestInfo, RequestSearchCriteria criteria){
 
 
-
+        if(criteria.isEmpty() && requestInfo.getUserInfo().getType().equalsIgnoreCase("CITIZEN")){
+            String citizenMobileNumber = requestInfo.getUserInfo().getUserName();
+            criteria.setMobileNumber(citizenMobileNumber);
+        }
         criteria.setAccountId(requestInfo.getUserInfo().getUuid());
 
         String tenantId = (criteria.getTenantId()!=null) ? criteria.getTenantId() : requestInfo.getUserInfo().getTenantId();

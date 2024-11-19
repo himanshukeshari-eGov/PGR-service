@@ -52,7 +52,10 @@ public class ServiceConstants {
     public static final String PGR_MODULENAME = "PGR";
     public static final String MDMS_SERVICEDEF = "ServiceDefs";
     public static final String MDMS_MODULE_NAME = "RAINMAKER-PGR";
-
+    public static final String USERTYPE_CITIZEN = "CITIZEN";
+    public static final String COMPLAINTS_RESOLVED = "complaintsResolved";
+    public static final String AVERAGE_RESOLUTION_TIME = "averageResolutionTime";
+    public static final String USERTYPE_EMPLOYEE = "EMPLOYEE";
 
 
 

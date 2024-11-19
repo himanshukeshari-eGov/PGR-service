@@ -1,8 +1,8 @@
 package digit.repository.rowmapper;
 
 
-
 import digit.config.Configuration;
+
 import digit.web.models.RequestSearchCriteria;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ public class PGRQueryBuilder {
         this.config = config;
     }
 
-
     private static final String QUERY_ALIAS =   "ser.id as ser_id,ads.id as ads_id," +
             "ser.tenantId as ser_tenantId,ads.tenantId as ads_tenantId," +
             "ser.additionaldetails as ser_additionaldetails,ads.additionaldetails as ads_additionaldetails," +
@@ -37,14 +36,14 @@ public class PGRQueryBuilder {
 
 
     private static final String QUERY = "select ser.*,ads.*," + QUERY_ALIAS+
-            " from {schema}.eg_pgr_service_v2 ser INNER JOIN {schema}.eg_pgr_address_v2 ads" +
+            " from eg_pgr_service_v2 ser INNER JOIN eg_pgr_address_v2 ads" +
             " ON ads.parentId = ser.id ";
 
     private static final String COUNT_WRAPPER = "select count(*) from ({INTERNAL_QUERY}) as count";
 
-    private static final String RESOLVED_COMPLAINTS_QUERY = "select count(*) from {schema}.eg_pgr_service_v2 where applicationstatus='CLOSEDAFTERRESOLUTION' and tenantid=? and lastmodifiedtime>? ";
+    private static final String RESOLVED_COMPLAINTS_QUERY = "select count(*) from eg_pgr_service_v2 where applicationstatus='CLOSEDAFTERRESOLUTION' and tenantid=? and lastmodifiedtime>? ";
 
-    private static final String AVERAGE_RESOLUTION_TIME_QUERY = "select round(avg(lastmodifiedtime-createdtime)/86400000) from {schema}.eg_pgr_service_v2 where applicationstatus='CLOSEDAFTERRESOLUTION' and tenantid=? ";
+    private static final String AVERAGE_RESOLUTION_TIME_QUERY = "select round(avg(lastmodifiedtime-createdtime)/86400000) from eg_pgr_service_v2 where applicationstatus='CLOSEDAFTERRESOLUTION' and tenantid=? ";
 
 
 
@@ -66,7 +65,7 @@ public class PGRQueryBuilder {
 
                 String[] tenantIdChunks = tenantId.split("\\.");
 
-                if (tenantIdChunks.length == config.getStateLevelTenantIdLength()) {
+                if (tenantIdChunks.length == 1) {
                     addClauseIfRequired(preparedStmtList, builder);
                     builder.append(" ser.tenantid LIKE ? ");
                     preparedStmtList.add(criteria.getTenantId() + '%');

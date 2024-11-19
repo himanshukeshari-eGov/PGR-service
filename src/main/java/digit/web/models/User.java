@@ -9,10 +9,9 @@ import org.egov.common.contract.request.Role;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends org.egov.common.contract.request.User {
 
     private Long id;
     private String userName;

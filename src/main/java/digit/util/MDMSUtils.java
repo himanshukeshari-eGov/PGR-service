@@ -63,10 +63,10 @@ public class MDMSUtils {
 
     private List<ModuleDetail> getPGRModuleRequest() {
 
-        // master details for TL module
+
         List<MasterDetail> pgrMasterDetails = new ArrayList<>();
 
-        // filter to only get code field from master data
+
         final String filterCode = "$.[?(@.active==true)]";
 
         pgrMasterDetails.add(MasterDetail.builder().name(ServiceConstants.MDMS_SERVICEDEF).filter(filterCode).build());
@@ -80,52 +80,6 @@ public class MDMSUtils {
     }
 
 
-
-
-//    public Map<String, Map<String, JSONArray>> fetchMdmsData(RequestInfo requestInfo, String tenantId, String moduleName,
-//                                                                                List<String> masterNameList) {
-//        StringBuilder uri = new StringBuilder();
-//        uri.append(configs.getMdmsHost()).append(configs.getMdmsEndPoint());
-//        MdmsCriteriaReq mdmsCriteriaReq = getMdmsRequest(requestInfo, tenantId, moduleName, masterNameList);
-//        Object response = new HashMap<>();
-//        Integer rate = 0;
-//        MdmsResponse mdmsResponse = new MdmsResponse();
-//        try {
-//            response = restTemplate.postForObject(uri.toString(), mdmsCriteriaReq, Map.class);
-//            mdmsResponse = mapper.convertValue(response, MdmsResponse.class);
-//        }catch(Exception e) {
-//            log.error(ERROR_WHILE_FETCHING_FROM_MDMS,e);
-//        }
-//
-//        return mdmsResponse.getMdmsRes();
-//        //log.info(ulbToCategoryListMap.toString());
-//    }
-
-//    private MdmsCriteriaReq getMdmsRequest(RequestInfo requestInfo, String tenantId,
-//                                           String moduleName, List<String> masterNameList) {
-//        List<MasterDetail> masterDetailList = new ArrayList<>();
-//        for(String masterName: masterNameList) {
-//            MasterDetail masterDetail = new MasterDetail();
-//            masterDetail.setName(masterName);
-//            masterDetailList.add(masterDetail);
-//        }
-//
-//        ModuleDetail moduleDetail = new ModuleDetail();
-//        moduleDetail.setMasterDetails(masterDetailList);
-//        moduleDetail.setModuleName(moduleName);
-//        List<ModuleDetail> moduleDetailList = new ArrayList<>();
-//        moduleDetailList.add(moduleDetail);
-//
-//        MdmsCriteria mdmsCriteria = new MdmsCriteria();
-//        mdmsCriteria.setTenantId(tenantId.split("\\.")[0]);
-//        mdmsCriteria.setModuleDetails(moduleDetailList);
-//
-//        MdmsCriteriaReq mdmsCriteriaReq = new MdmsCriteriaReq();
-//        mdmsCriteriaReq.setMdmsCriteria(mdmsCriteria);
-//        mdmsCriteriaReq.setRequestInfo(requestInfo);
-//
-//        return mdmsCriteriaReq;
-//    }
     public StringBuilder getMdmsSearchUrl() {
         return new StringBuilder().append(config.getMdmsHost()).append(config.getMdmsEndPoint());
     }

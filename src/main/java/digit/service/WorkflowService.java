@@ -9,6 +9,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.workflow.*;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import digit.config.ServiceConstants;
 import org.egov.common.contract.request.User;
@@ -18,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
-
+@Component
 public class WorkflowService {
 
     private Configuration configuration;
@@ -28,7 +29,6 @@ public class WorkflowService {
     private ObjectMapper mapper;
 
     private ServiceConstants serviceConstants;
-
 
     @Autowired
     public WorkflowService(Configuration configuration, ServiceRequestRepository repository, ObjectMapper mapper) {
@@ -96,7 +96,6 @@ public class WorkflowService {
 
     public List<ServiceWrapper> enrichWorkflow(RequestInfo requestInfo, List<ServiceWrapper> serviceWrappers) {
 
-        // FIX ME FOR BULK SEARCH
         Map<String, List<ServiceWrapper>> tenantIdToServiceWrapperMap = getTenantIdToServiceWrapperMap(serviceWrappers);
 
         List<ServiceWrapper> enrichedServiceWrappers = new ArrayList<>();
@@ -198,9 +197,9 @@ public class WorkflowService {
         for (ProcessInstance processInstance : processInstances) {
             List<String> userIds = null;
 
-//            if (!CollectionUtils.isEmpty(processInstance.getAssignes())) {
-//                userIds = processInstance.getAssignes().stream().map((User t) -> User.getid(t)).collect(Collectors.toList());
-//            }
+            if(!CollectionUtils.isEmpty(processInstance.getAssignes())){
+                userIds = processInstance.getAssignes().stream().map(User::getUuid).collect(Collectors.toList());
+            }
 
             Workflow workflow = Workflow.builder()
                     .action(processInstance.getAction())

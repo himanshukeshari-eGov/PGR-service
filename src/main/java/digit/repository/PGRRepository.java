@@ -17,8 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import digit.config.ServiceConstants;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class PGRRepository {
 
 
@@ -38,6 +39,9 @@ public class PGRRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.utils = utils;
     }
+
+
+
 
     /**
      * searches services based on search criteria and then wraps it into serviceWrappers
@@ -67,12 +71,6 @@ public class PGRRepository {
         String tenantId = criteria.getTenantId();
         List<Object> preparedStmtList = new ArrayList<>();
         String query = queryBuilder.getPGRSearchQuery(criteria, preparedStmtList);
-        try {
-//            query = utils.replaceSchemaPlaceholder(query, tenantId);
-        } catch (Exception e) {
-            throw new CustomException("PGR_UPDATE_ERROR",
-                    "TenantId length is not sufficient to replace query schema in a multi state instance");
-        }
         List<Service> services =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
         return services;
     }
@@ -82,21 +80,36 @@ public class PGRRepository {
      * @param criteria
      * @return
      */
-//    public Integer getCount(RequestSearchCriteria criteria) {
-//
-//        String tenantId = criteria.getTenantId();
-//        List<Object> preparedStmtList = new ArrayList<>();
-//        String query = queryBuilder.getCountQuery(criteria, preparedStmtList);
-//        try {
-//            query = utils.replaceSchemaPlaceholder(query, tenantId);
-//        } catch (Exception e) {
-//            throw new CustomException("PGR_REQUEST_COUNT_ERROR",
-//                    "TenantId length is not sufficient to replace query schema in a multi state instance");
-//        }
-//        Integer count =  jdbcTemplate.queryForObject(query, preparedStmtList.toArray(), Integer.class);
-//        return count;
-//    }
-////
+    public Integer getCount(RequestSearchCriteria criteria) {
+
+        List<Object> preparedStmtList = new ArrayList<>();
+        String query = queryBuilder.getCountQuery(criteria, preparedStmtList);
+        Integer count =  jdbcTemplate.queryForObject(query, preparedStmtList.toArray(), Integer.class);
+        return count;
+    }
+
+
+    public Map<String, Integer> fetchDynamicData(String tenantId) {
+        List<Object> preparedStmtListCompalintsResolved = new ArrayList<>();
+        String query = queryBuilder.getResolvedComplaints(tenantId,preparedStmtListCompalintsResolved );
+        int complaintsResolved = jdbcTemplate.queryForObject(query,preparedStmtListCompalintsResolved.toArray(),Integer.class);
+
+        List<Object> preparedStmtListAverageResolutionTime = new ArrayList<>();
+        query = queryBuilder.getAverageResolutionTime(tenantId, preparedStmtListAverageResolutionTime);
+        Integer averageResolutionTime = jdbcTemplate.queryForObject(
+                query,
+                preparedStmtListAverageResolutionTime.toArray(),
+                Integer.class
+        );
+
+        int averageResolutionTimeValue = (averageResolutionTime != null) ? averageResolutionTime : 0;
+        Map<String, Integer> dynamicData = new HashMap<String,Integer>();
+        dynamicData.put(ServiceConstants.COMPLAINTS_RESOLVED, complaintsResolved);
+        dynamicData.put(ServiceConstants.AVERAGE_RESOLUTION_TIME, averageResolutionTimeValue);
+
+        return dynamicData;
+    }
+
 
 
 }

@@ -10,12 +10,11 @@ import digit.web.models.ServiceWrapper;
 import org.egov.common.contract.request.RequestInfo;
 import digit.config.ServiceConstants;
 import digit.util.HRMSUtil;
-import org.egov.common.contract.request.User;
+
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -36,10 +35,11 @@ public class ServiceRequestValidator {
 
 
     @Autowired
-    public ServiceRequestValidator(Configuration config,  HRMSUtil hrmsUtil) {
+    public ServiceRequestValidator(Configuration config,  HRMSUtil hrmsUtil, PGRRepository repository) {
         this.config = config;
 
         this.hrmsUtil = hrmsUtil;
+        this.repository=repository;
     }
 
 
@@ -89,8 +89,6 @@ public class ServiceRequestValidator {
         if(CollectionUtils.isEmpty(serviceWrappers))
             throw new CustomException("INVALID_UPDATE","The record that you are trying to update does not exists");
 
-        // TO DO
-
     }
 
 
@@ -130,7 +128,7 @@ public class ServiceRequestValidator {
 
         List<String> departments = hrmsUtil.getDepartment(assignes, request.getRequestInfo());
 
-        String jsonPath = serviceConstants.MDMS_DEPARTMENT_SEARCH.replace("{SERVICEDEF}",serviceCode);
+        String jsonPath = ServiceConstants.MDMS_DEPARTMENT_SEARCH.replace("{SERVICEDEF}",serviceCode);
 
         List<String> res = null;
         String departmentFromMDMS;
@@ -160,9 +158,6 @@ public class ServiceRequestValidator {
 
     public void validateSearch(RequestInfo requestInfo, RequestSearchCriteria criteria){
 
-        /*
-         * Checks if tenatId is provided with the search params
-         * */
         if( (criteria.getMobileNumber()!=null
                 || criteria.getServiceRequestId()!=null || criteria.getIds()!=null
                 || criteria.getServiceCode()!=null )
@@ -172,6 +167,7 @@ public class ServiceRequestValidator {
         validateSearchParam(requestInfo, criteria);
 
     }
+
 
 
 
@@ -209,9 +205,5 @@ public class ServiceRequestValidator {
 
     }
 
-    public void validatePlainSearch(RequestSearchCriteria criteria) {
-        if(CollectionUtils.isEmpty(criteria.getTenantIds())){
-            throw new CustomException("TENANT_ID_LIST_EMPTY", "Tenant ids not provided for searching.");
-        }
-    }
+
 }

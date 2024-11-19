@@ -3,6 +3,7 @@ package digit.service;
 
 
 import digit.config.Configuration;
+import digit.config.ServiceConstants;
 import digit.repository.PGRRepository;
 import digit.validator.ServiceRequestValidator;
 import digit.web.models.ServiceRequest;
@@ -12,6 +13,7 @@ import digit.web.models.ServiceWrapper;
 import digit.web.models.RequestSearchCriteria;
 
 import digit.util.MDMSUtils;
+import org.egov.common.contract.request.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import digit.kafka.Producer;
@@ -41,18 +43,22 @@ public class PGRService {
 
     private Producer producer;
 
+    private UserService userService;
+
+
 
     @Autowired
     public PGRService(EnrichmentService enrichmentService,
                       ServiceRequestValidator serviceRequestValidator, ServiceRequestValidator validator, Producer producer,
-                      Configuration config,  MDMSUtils mdmsUtils) {
+                      Configuration config,  MDMSUtils mdmsUtils , UserService userService, PGRRepository repository, WorkflowService workflowService) {
         this.enrichmentService = enrichmentService;
-
+        this.repository=repository;
         this.serviceRequestValidator = serviceRequestValidator;
         this.validator = validator;
         this.producer = producer;
         this.config = config;
         this.mdmsUtils = mdmsUtils;
+        this.workflowService=workflowService;
     }
 
 
@@ -64,8 +70,8 @@ public class PGRService {
     public ServiceRequest create(ServiceRequest request){
         Object mdmsData = mdmsUtils.fetchMdmsData(request);
         validator.validateCreate(request, mdmsData);
-//        enrichmentService.enrichCreateRequest(request);
-//        workflowService.updateWorkflowStatus(request);
+        enrichmentService.enrichCreateRequest(request);
+        workflowService.updateWorkflowStatus(request);
         producer.push(config.getCreateTopic(),request);
         return request;
     }
@@ -110,7 +116,7 @@ public class PGRService {
         for(Long createdTimeDesc : sortedWrappers.keySet()){
             sortedServiceWrappers.addAll(sortedWrappers.get(createdTimeDesc));
         }
-        return sortedServiceWrappers;
+        return serviceWrappers;
     }
 
 
@@ -120,7 +126,6 @@ public class PGRService {
      * @return
      */
     public ServiceRequest update(ServiceRequest request){
-        String tenantId = request.getServiceWrapper().getService().getTenantId();
         Object mdmsData = mdmsUtils.fetchMdmsData(request);
         validator.validateUpdate(request, mdmsData);
         enrichmentService.enrichUpdateRequest(request);
@@ -135,50 +140,11 @@ public class PGRService {
      * @param criteria The search criteria containg the params for which count is required
      * @return
      */
-//    public Integer count(RequestInfo requestInfo, RequestSearchCriteria criteria){
-//        criteria.setIsPlainSearch(false);
-//        Integer count = repository.getCount(criteria);
-//        return count;
-//    }
+    public Integer count(RequestInfo requestInfo, RequestSearchCriteria criteria){
+        criteria.setIsPlainSearch(false);
+        Integer count = repository.getCount(criteria);
+        return count;
+    }
 
-
-//    public List<ServiceWrapper> plainSearch(RequestInfo requestInfo, RequestSearchCriteria criteria) {
-//        validator.validatePlainSearch(criteria);
-//
-//        criteria.setIsPlainSearch(true);
-//
-//        if(criteria.getLimit()==null)
-//            criteria.setLimit(config.getDefaultLimit());
-//
-//        if(criteria.getOffset()==null)
-//            criteria.setOffset(config.getDefaultOffset());
-//
-//        if(criteria.getLimit()!=null && criteria.getLimit() > config.getMaxLimit())
-//            criteria.setLimit(config.getMaxLimit());
-//
-//        List<ServiceWrapper> serviceWrappers = repository.getServiceWrappers(criteria);
-//
-//        if(CollectionUtils.isEmpty(serviceWrappers)){
-//            return new ArrayList<>();
-//        }
-//
-//        List<ServiceWrapper> enrichedServiceWrappers = workflowService.enrichWorkflow(requestInfo, serviceWrappers);
-//
-//        Map<Long, List<ServiceWrapper>> sortedWrappers = new TreeMap<>(Collections.reverseOrder());
-//        for(ServiceWrapper svc : enrichedServiceWrappers){
-//            if(sortedWrappers.containsKey(svc.getService().getAuditDetails().getCreatedTime())){
-//                sortedWrappers.get(svc.getService().getAuditDetails().getCreatedTime()).add(svc);
-//            }else{
-//                List<ServiceWrapper> serviceWrapperList = new ArrayList<>();
-//                serviceWrapperList.add(svc);
-//                sortedWrappers.put(svc.getService().getAuditDetails().getCreatedTime(), serviceWrapperList);
-//            }
-//        }
-//        List<ServiceWrapper> sortedServiceWrappers = new ArrayList<>();
-//        for(Long createdTimeDesc : sortedWrappers.keySet()){
-//            sortedServiceWrappers.addAll(sortedWrappers.get(createdTimeDesc));
-//        }
-//        return sortedServiceWrappers;
-//    }
 
 }

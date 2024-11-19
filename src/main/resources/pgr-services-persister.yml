@@ -39,53 +39,53 @@ serviceMaps:
             - jsonPath: $.ServiceWrapper.service.auditDetails.lastModifiedTime
 
         - query: INSERT INTO eg_pgr_address_v2(id, tenantid, parentid, doorno, plotno, buildingname, street, landmark, city, pincode, locality, district, region, state, country, latitude, longitude, additionaldetails, createdby, createdtime, lastmodifiedby, lastmodifiedtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-          basePath: service.address
+          basePath: ServiceWrapper.service.address
           jsonMaps:
-            - jsonPath: $.service.address.id
+            - jsonPath: $.ServiceWrapper.service.address.id
 
-            - jsonPath: $.service.address.tenantId
+            - jsonPath: $.ServiceWrapper.service.address.tenantId
 
-            - jsonPath: $.service.id
+            - jsonPath: $.ServiceWrapper.service.id
 
-            - jsonPath: $.service.address.doorNo
+            - jsonPath: $.ServiceWrapper.service.address.doorNo
 
-            - jsonPath: $.service.address.plotNo
+            - jsonPath: $.ServiceWrapper.service.address.plotNo
 
-            - jsonPath: $.service.address.buildingName
+            - jsonPath: $.ServiceWrapper.service.address.buildingName
 
-            - jsonPath: $.service.address.street
+            - jsonPath: $.ServiceWrapper.service.address.street
 
-            - jsonPath: $.service.address.landmark
+            - jsonPath: $.ServiceWrapper.service.address.landmark
 
-            - jsonPath: $.service.address.city
+            - jsonPath: $.ServiceWrapper.service.address.city
 
-            - jsonPath: $.service.address.pincode
+            - jsonPath: $.ServiceWrapper.service.address.pincode
 
-            - jsonPath: $.service.address.locality.code
+            - jsonPath: $.ServiceWrapper.service.address.locality.code
 
-            - jsonPath: $.service.address.district
+            - jsonPath: $.ServiceWrapper.service.address.district
 
-            - jsonPath: $.service.address.region
+            - jsonPath: $.ServiceWrapper.service.address.region
 
-            - jsonPath: $.service.address.state
+            - jsonPath: $.ServiceWrapper.service.address.state
 
-            - jsonPath: $.service.address.country
+            - jsonPath: $.ServiceWrapper.service.address.country
 
-            - jsonPath: $.service.address.geoLocation.latitude
+            - jsonPath: $.ServiceWrapper.service.address.geoLocation.latitude
 
-            - jsonPath: $.service.address.geoLocation.longitude
+            - jsonPath: $.ServiceWrapper.service.address.geoLocation.longitude
 
-            - jsonPath: $.service.address.additionDetails
+            - jsonPath: $.ServiceWrapper.service.address.additionDetails
               type: JSON
               dbType: JSONB
 
-            - jsonPath: $.service.auditDetails.createdBy
+            - jsonPath: $.ServiceWrapper.service.auditDetails.createdBy
 
-            - jsonPath: $.service.auditDetails.createdTime
+            - jsonPath: $.ServiceWrapper.service.auditDetails.createdTime
 
-            - jsonPath: $.service.auditDetails.lastModifiedBy
+            - jsonPath: $.ServiceWrapper.service.auditDetails.lastModifiedBy
 
-            - jsonPath: $.service.auditDetails.lastModifiedTime
+            - jsonPath: $.ServiceWrapper.service.auditDetails.lastModifiedTime
 
 
 
@@ -121,43 +121,43 @@ serviceMaps:
 
 
         - query: UPDATE eg_pgr_address_v2 SET doorno=?, plotno=?, buildingname=?, street=?, landmark=?, city=?, pincode=?, locality=?, district=?, region=?, state=?, country=?, latitude=?, longitude=?,additionaldetails=?, lastmodifiedby=?, lastmodifiedtime=? WHERE id=?;
-          basePath: service.address
+          basePath: ServiceWrapper.service.address
           jsonMaps:
 
-            - jsonPath: $.service.address.doorNo
+            - jsonPath: $.ServiceWrapper.service.address.doorNo
 
-            - jsonPath: $.service.address.plotNo
+            - jsonPath: $.ServiceWrapper.service.address.plotNo
 
-            - jsonPath: $.service.address.buildingName
+            - jsonPath: $.ServiceWrapper.service.address.buildingName
 
-            - jsonPath: $.service.address.street
+            - jsonPath: $.ServiceWrapper.service.address.street
 
-            - jsonPath: $.service.address.landmark
+            - jsonPath: $.ServiceWrapper.service.address.landmark
 
-            - jsonPath: $.service.address.city
+            - jsonPath: $.ServiceWrapper.service.address.city
 
-            - jsonPath: $.service.address.pincode
+            - jsonPath: $.ServiceWrapper.service.address.pincode
 
-            - jsonPath: $.service.address.locality.code
+            - jsonPath: $.ServiceWrapper.service.address.locality.code
 
-            - jsonPath: $.service.address.district
+            - jsonPath: $.ServiceWrapper.service.address.district
 
-            - jsonPath: $.service.address.region
+            - jsonPath: $.ServiceWrapper.service.address.region
 
-            - jsonPath: $.service.address.state
+            - jsonPath: $.ServiceWrapper.service.address.state
 
-            - jsonPath: $.service.address.country
+            - jsonPath: $.ServiceWrapper.service.address.country
 
-            - jsonPath: $.service.address.geoLocation.latitude
+            - jsonPath: $.ServiceWrapper.service.address.geoLocation.latitude
 
-            - jsonPath: $.service.address.geoLocation.longitude
+            - jsonPath: $.ServiceWrapper.service.address.geoLocation.longitude
 
-            - jsonPath: $.service.address.additionDetails
+            - jsonPath: $.ServiceWrapper.service.address.additionDetails
               type: JSON
               dbType: JSONB
 
-            - jsonPath: $.service.auditDetails.lastModifiedBy
+            - jsonPath: $.ServiceWrapper.service.auditDetails.lastModifiedBy
 
-            - jsonPath: $.service.auditDetails.lastModifiedTime
+            - jsonPath: $.ServiceWrapper.service.auditDetails.lastModifiedTime
 
-            - jsonPath: $.service.address.id
+            - jsonPath: $.ServiceWrapper.service.address.id
